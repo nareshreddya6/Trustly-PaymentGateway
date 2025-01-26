@@ -13,6 +13,20 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>PaymentChecksHandler</name>
 	<description>Payment Integration project for Spring Boot</description>
+
+<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<spring.application.name>PaymentChecksHandler</spring.application.name>
+		<junit.jupiter.version>5.8.1</junit.jupiter.version>
+		<junit.platform.version>1.8.1</junit.platform.version>
+		<log4j2.version>2.17.2</log4j2.version>
+		<spring-cloud.version>2021.0.3</spring-cloud.version>
+	</properties>
+
 	<url/>
 	<licenses>
 		<license/>
