@@ -3,12 +3,12 @@ import lombok.Data;
 
 @Data
 public class PaymentDetails {
-    private String method;                 // Renamed from 'paymentMethod'
-    private String type;                   // Renamed from 'paymentType'
-    private String totalAmount;            // Renamed from 'amount'
-    private String currencyCode;           // Renamed from 'currency'
-    private String transactionReference;   // Renamed from 'merchantTransactionReference'
-    private String providerIdentifier;     // Renamed from 'providerId'
-    private String creditorAccountNumber;  // Renamed from 'creditorAccount'
-    private String debitorAccountNumber;   // Renamed from 'debitorAccount'
+    private String method;                 
+    private String type;                   
+    private String totalAmount;           
+    private String currencyCode;          
+    private String transactionReference;  
+    private String providerIdentifier;    
+    private String creditorAccountNumber; 
+    private String debitorAccountNumber;  
 }
