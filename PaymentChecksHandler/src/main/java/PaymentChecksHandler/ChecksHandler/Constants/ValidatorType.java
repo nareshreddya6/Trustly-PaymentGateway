@@ -1,41 +1,41 @@
 package com.cpt.payments.constants;
 
-import com.cpt.payments.service.Validator;
-import com.cpt.payments.service.impl.validators.AmountValidator;
-import com.cpt.payments.service.impl.validators.CreditorAccountNumberValidator;
-import com.cpt.payments.service.impl.validators.CurrencyValidator;
-import com.cpt.payments.service.impl.validators.DebitorAccountNumberValidator;
-import com.cpt.payments.service.impl.validators.DuplicateTransactionValidator;
-import com.cpt.payments.service.impl.validators.EmailValidator;
-import com.cpt.payments.service.impl.validators.FirstNameValidator;
-import com.cpt.payments.service.impl.validators.LastNameValidator;
-import com.cpt.payments.service.impl.validators.MerchantTransactionIDValidator;
-import com.cpt.payments.service.impl.validators.PaymentMethodValidator;
-import com.cpt.payments.service.impl.validators.PaymentRequestValidator;
-import com.cpt.payments.service.impl.validators.PaymentTypeValidator;
-import com.cpt.payments.service.impl.validators.PhoneNumberValidator;
-import com.cpt.payments.service.impl.validators.ProviderIdValidator;
-import com.cpt.payments.service.impl.validators.SignatureValidator;
+import com.cpt.payments.service.Checkers;
+import com.cpt.payments.service.impl.Checkers.AmountVal;
+import com.cpt.payments.service.impl.Checkers.CreditorAccountNumberVal;
+import com.cpt.payments.service.impl.Checkers.CurrencyVal;
+import com.cpt.payments.service.impl.Checkers.DebitorAccountNumberVal;
+import com.cpt.payments.service.impl.Checkers.DuplicateTransactionVal;
+import com.cpt.payments.service.impl.Checkers.EmailVal;
+import com.cpt.payments.service.impl.Checkers.FirstNameVal;
+import com.cpt.payments.service.impl.Checkers.LastNameVal;
+import com.cpt.payments.service.impl.Checkers.MerchantTransactionIDVal;
+import com.cpt.payments.service.impl.Checkers.PaymentMethodVal;
+import com.cpt.payments.service.impl.Checkers.PaymentRequestVal;
+import com.cpt.payments.service.impl.Checkers.PaymentTypeVal;
+import com.cpt.payments.service.impl.Checkers.PhoneNumberVal;
+import com.cpt.payments.service.impl.Checkers.ProviderIdVal;
+import com.cpt.payments.service.impl.Checkers.SignatureVal;
 
 import lombok.Getter;
 
 public enum ValidatorType {
 
-    SIGNATURE_VALIDATION("SIGNATURE_VALIDATION", SignatureValidator.class),
-    REQUEST_VALIDATION("REQUEST_VALIDATION", PaymentRequestValidator.class),
-    DUPLICATE_TXN_VALIDATION("DUPLICATE_TXN_VALIDATION", DuplicateTransactionValidator.class),
-    MERCHANT_TXN_ID_VALIDATION("MERCHANT_TXN_ID_VALIDATION", MerchantTransactionIDValidator.class),
-    FIRST_NAME_VALIDATION("FIRST_NAME_VALIDATION", FirstNameValidator.class),
-    LAST_NAME_VALIDATION("LAST_NAME_VALIDATION", LastNameValidator.class),
-    EMAIL_VALIDATION("EMAIL_VALIDATION", EmailValidator.class),
-    PHONE_NUMBER_VALIDATION("PHONE_NUMBER_VALIDATION", PhoneNumberValidator.class),
-    PAYMENT_METHOD_VALIDATION("PAYMENT_METHOD_VALIDATION", PaymentMethodValidator.class),
-    PAYMENT_TYPE_VALIDATION("PAYMENT_TYPE_VALIDATION", PaymentTypeValidator.class),
-    AMOUNT_VALIDATION("AMOUNT_VALIDATION", AmountValidator.class),
-    CURRENCY_VALIDATION("CURRENCY_VALIDATION", CurrencyValidator.class),
-    PROVIDER_VALIDATION("PROVIDER_VALIDATION", ProviderIdValidator.class),
-    CREDITOR_ACCOUNT_VALIDATION("CREDITOR_ACCOUNT_VALIDATION", CreditorAccountNumberValidator.class),
-    DEBITOR_ACCOUNT_VALIDATION("DEBITOR_ACCOUNT_VALIDATION", DebitorAccountNumberValidator.class);
+    SIGNATURE_VALIDATION("SIGNATURE_VALIDATION", SignatureVal.class),
+    REQUEST_VALIDATION("REQUEST_VALIDATION", PaymentRequestVal.class),
+    DUPLICATE_TXN_VALIDATION("DUPLICATE_TXN_VALIDATION", DuplicateTransactionVal.class),
+    MERCHANT_TXN_ID_VALIDATION("MERCHANT_TXN_ID_VALIDATION", MerchantTransactionIDVal.class),
+    FIRST_NAME_VALIDATION("FIRST_NAME_VALIDATION", FirstNameVal.class),
+    LAST_NAME_VALIDATION("LAST_NAME_VALIDATION", LastNameVal.class),
+    EMAIL_VALIDATION("EMAIL_VALIDATION", EmailVal.class),
+    PHONE_NUMBER_VALIDATION("PHONE_NUMBER_VALIDATION", PhoneNumberVal.class),
+    PAYMENT_METHOD_VALIDATION("PAYMENT_METHOD_VALIDATION", PaymentMethodVal.class),
+    PAYMENT_TYPE_VALIDATION("PAYMENT_TYPE_VALIDATION", PaymentTypeVal.class),
+    AMOUNT_VALIDATION("AMOUNT_VALIDATION", AmountVal.class),
+    CURRENCY_VALIDATION("CURRENCY_VALIDATION", CurrencyVal.class),
+    PROVIDER_VALIDATION("PROVIDER_VALIDATION", ProviderIdVal.class),
+    CREDITOR_ACCOUNT_VALIDATION("CREDITOR_ACCOUNT_VALIDATION", CreditorAccountNumberVal.class),
+    DEBITOR_ACCOUNT_VALIDATION("DEBITOR_ACCOUNT_VALIDATION", DebitorAccountNumberVal.class);
 
     @Getter
     private final String typeName;

@@ -82,14 +82,14 @@ public class PaymentServiceImpl implements PaymentService {
 
     private void validatePaymentRequest(PaymentRequest request, List<String> validatorNames) {
         for (String validator : validatorNames) {
-            ValidatorType validatortype = ValidatorType.getEnumByString(validator);
+            ValidatorType validatortype = ValidatorType.fromName(validator);
             Validator validatorInstance = getValidatorInstance(validatortype);
             validatorInstance.performValidation(request);
         }
     }
 
     private Validator getValidatorInstance(ValidatorType validatorEnum) {
-        return appContext.getBean(validatorEnum.getValidatorClass());
+        return appContext.getBean(validatorEnum.getAssociatedValidator());
     }
 
     private PaymentResponse executeTransaction(TransactionReqRes transaction, PaymentRequest request) {
