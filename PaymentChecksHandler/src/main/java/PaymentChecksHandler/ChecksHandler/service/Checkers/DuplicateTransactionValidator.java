@@ -1,4 +1,4 @@
-package com.cpt.payments.service.impl.validators;
+package main.java.PaymentChecksHandler.ChecksHandler.service.Checkers;
 
 import javax.xml.bind.Validator;
 
@@ -32,7 +32,7 @@ public class DuplicateTransactionValidator implements Validator {
     private final Gson gson = new Gson();
 
     @Override
-    public void doValidate(PaymentRequest paymentRequest) {
+    public void performValidation(PaymentRequest paymentRequest) {
         String transactionId = paymentRequest.getPayment().getMerchantTransactionReference();
 
         if (isDuplicateTransaction(transactionId)) {
