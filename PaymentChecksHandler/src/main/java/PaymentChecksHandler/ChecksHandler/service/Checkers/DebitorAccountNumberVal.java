@@ -1,5 +1,7 @@
 package main.java.PaymentChecksHandler.ChecksHandler.service.Checkers;
 
+import javax.xml.bind.Validator;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,7 @@ public class DebitorAccountNumberVal implements Validator {
     private static final String ACCOUNT_NUMBER_PATTERN = "^[0-9]{1,20}";
 
     @Override
-    public void doValidate(PaymentRequest paymentRequest) {
+    public void performValidation(PaymentRequest paymentRequest) {
         LogMessage.log(LOGGER, "Validating debitor account for request -> " + paymentRequest);
 
         String debitorAccount = paymentRequest.getPayment().getDebitorAccount();
