@@ -21,7 +21,7 @@ import main.java.PaymentChecksHandler.ChecksHandler.utils.LogMessage;
 import main.java.PaymentChecksHandler.ChecksHandler.utils;
 
 @Component
-public class SignatureValidator implements Validator {
+public class SignatureVal implements Validator {
 
     private static final Logger LOGGER = LogManager.getLogger(SignatureValidator.class);
 

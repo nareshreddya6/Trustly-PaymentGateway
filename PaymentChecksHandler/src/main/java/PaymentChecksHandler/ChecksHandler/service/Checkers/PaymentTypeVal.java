@@ -15,7 +15,7 @@ import main.java.PaymentChecksHandler.ChecksHandler.utils.LogMessage;
 import main.java.PaymentChecksHandler.ChecksHandler.utils;
 
 @Component
-public class PaymentTypeValidator implements Validator {
+public class PaymentTypeVal implements Validator {
 
     private static final Logger LOGGER = LogManager.getLogger(PaymentTypeValidator.class);
 

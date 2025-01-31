@@ -15,7 +15,7 @@ import main.java.PaymentChecksHandler.ChecksHandler.utils.LogMessage;
 import main.java.PaymentChecksHandler.ChecksHandler.utils;
 
 @Component
-public class PhoneNumberValidator implements Validator {
+public class PhoneNumberVal implements Validator {
 
     private static final Logger LOGGER = LogManager.getLogger(PhoneNumberValidator.class);
 
