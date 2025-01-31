@@ -1,5 +1,7 @@
 package main.java.PaymentChecksHandler.ChecksHandler.service.Checkers;
 
+import javax.xml.bind.Validator;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,7 @@ import main.java.PaymentChecksHandler.ChecksHandler.utils;
 public class EmailValidator implements Validator {
 
     private static final Logger LOGGER = LogManager.getLogger(EmailValidator.class);
-    private static final String EMAIL_PATTERN = "(?i)[-a-zA-Z0-9+_][-a-zA-Z0-9+_.]*@[-a-zA-Z0-9][-a-zA-Z0-9.]*\\.[a-zA-Z]{2,30}";
+    private static final String EMAIL_PATTERN = "(?i)[a-zA-Z0-9_][a-zA-Z0-9+_.-]*@[a-zA-Z0-9][a-zA-Z0-9.-]*\\.[a-zA-Z]{2,30}";
 
     @Override
     public void performValidation(PaymentRequest paymentRequest) {
