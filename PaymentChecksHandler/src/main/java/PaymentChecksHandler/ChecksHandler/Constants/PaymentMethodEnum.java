@@ -1,4 +1,4 @@
-package main.java.PaymentChecksHandler.Constants;
+package main.java.PaymentChecksHandler.ChecksHandler.Constants;
 
 import lombok.Getter;
 
