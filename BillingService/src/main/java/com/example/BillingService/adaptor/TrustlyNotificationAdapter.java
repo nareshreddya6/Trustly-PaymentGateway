@@ -1,84 +1,105 @@
 package com.cpt.payments.adapter;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-
 import com.example.BillingService.constants.ErrorCodeEnum;
 import com.example.BillingService.constants.TransactionStatusEnum;
-
-
+import com.example.BillingService.exception.PaymentProcessingException;
+import com.example.BillingService.model.Transaction;
+import com.example.BillingService.util.LogMessage;
 import com.google.gson.Gson;
 
 @Component
-public class TrustlyNotificationAdapter {
+public class PaymentNotificationProcessor {
+    private static final Logger LOGGER = LogManager.getLogger(PaymentNotificationProcessor.class);
+    
+    private final PaymentStatusService paymentStatusService;
+    private final HttpServletRequest httpServletRequest;
+    private final SignatureVerificationService signatureVerifier;
+    private final TransactionRepository transactionRepository;
+    private final Gson gson;
 
-    private static final String FAILED = "Failed";
-    private static final String SUCCESS = "Success";
-    private static final Logger LOGGER = LogManager.getLogger(TrustlyNotificationAdapter.class);
+    @Value("${trustly.public.key.path}")
+    private String publicKeyPath;
 
-    @Autowired
-    private PaymentStatusService paymentStatusService;
+    public PaymentNotificationProcessor(
+            PaymentStatusService paymentStatusService,
+            HttpServletRequest httpServletRequest,
+            SignatureVerificationService signatureVerifier,
+            TransactionRepository transactionRepository) {
+        this.paymentStatusService = paymentStatusService;
+        this.httpServletRequest = httpServletRequest;
+        this.signatureVerifier = signatureVerifier;
+        this.transactionRepository = transactionRepository;
+        this.gson = new Gson();
+    }
 
-    @Autowired
-    private HttpServletRequest httpServletRequest;
+    public void handlePaymentNotification(PaymentNotificationRequest notificationRequest) {
+        validateAndVerifySignature(notificationRequest);
+        processPaymentUpdate(notificationRequest);
+    }
 
-    @Autowired
-    private SHA256RSASignatureVerifier signatureVerifier;
+    private void validateAndVerifySignature(PaymentNotificationRequest request) {
+        String signature = extractSignature();
+        verifySignature(signature, request);
+    }
 
-    @Autowired
-    private TransactionDao transactionDao;
-
-    private static final String PUBLIC_KEY_PATH = "./src/main/java/com/cpt/payments/util/public_trustly.pem";
-
-    public void processNotification(TrustlyNotificationRequest request) {
-        LogMessage.log(LOGGER, "Validating signature for request: " + request);
+    private String extractSignature() {
         String signature = httpServletRequest.getHeader("signature");
-
         if (signature == null) {
-            LogMessage.log(LOGGER, "Signature not found in request headers");
+            LogMessage.log(LOGGER, "Payment notification received without signature");
             throw new PaymentProcessingException(HttpStatus.UNAUTHORIZED, ErrorCodeEnum.SIGNATURE_NOT_FOUND);
         }
+        return signature;
+    }
 
-        Gson gson = new Gson();
+    private void verifySignature(String signature, PaymentNotificationRequest request) {
         try {
-            if (!signatureVerifier.verifySignature(signature, gson.toJson(request), PUBLIC_KEY_PATH)) {
-                LogMessage.log(LOGGER, "Invalid signature detected");
+            boolean isValid = signatureVerifier.verify(signature, gson.toJson(request), publicKeyPath);
+            if (!isValid) {
+                LogMessage.log(LOGGER, "Invalid signature detected in payment notification");
                 throw new PaymentProcessingException(HttpStatus.BAD_REQUEST, ErrorCodeEnum.INVALID_SIGNATURE);
             }
         } catch (Exception e) {
-            LogMessage.log(LOGGER, "Exception during signature validation: " + e.getMessage());
+            LogMessage.log(LOGGER, "Signature verification failed: " + e.getMessage());
             throw new PaymentProcessingException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodeEnum.SIGNATURE_VERIFICATION_FAILED);
         }
+    }
 
-        LogMessage.log(LOGGER, "Signature verified for request: " + request);
-
-        Transaction transaction = transactionDao.getTransactionByProviderReference(request.getPaymentId());
-        if (transaction == null) {
-            LogMessage.log(LOGGER, "Transaction not found for payment ID: " + request.getPaymentId());
-            throw new PaymentProcessingException(HttpStatus.BAD_REQUEST, ErrorCodeEnum.PAYMENT_NOT_FOUND);
-        }
-
-        updateTransactionStatus(request, transaction);
+    private void processPaymentUpdate(PaymentNotificationRequest request) {
+        Transaction transaction = findTransaction(request.getPaymentId());
+        updateTransactionStatus(transaction, request);
         transaction = paymentStatusService.updatePaymentStatus(transaction);
-        updateProviderDetails(transaction, request);
-        transactionDao.updateProviderCodeAndMessage(transaction);
+        updateTransactionDetails(transaction, request);
+        transactionRepository.save(transaction);
     }
 
-    private void updateTransactionStatus(TrustlyNotificationRequest request, Transaction transaction) {
-        if (SUCCESS.equalsIgnoreCase(request.getStatus())) {
-            transaction.setTxnStatusId(TransactionStatusEnum.APPROVED.getId());
-        } else if (FAILED.equalsIgnoreCase(request.getStatus())) {
-            transaction.setTxnStatusId(TransactionStatusEnum.FAILED.getId());
-        }
+    private Transaction findTransaction(String paymentId) {
+        return transactionRepository.findByProviderReference(paymentId)
+                .orElseThrow(() -> {
+                    LogMessage.log(LOGGER, "Transaction not found for payment ID: " + paymentId);
+                    return new PaymentProcessingException(HttpStatus.BAD_REQUEST, ErrorCodeEnum.PAYMENT_NOT_FOUND);
+                });
     }
 
-    private void updateProviderDetails(Transaction transaction, TrustlyNotificationRequest request) {
+    private void updateTransactionStatus(Transaction transaction, PaymentNotificationRequest request) {
+        TransactionStatusEnum newStatus = determineTransactionStatus(request.getStatus());
+        transaction.setTxnStatusId(newStatus.getId());
+    }
+
+    private TransactionStatusEnum determineTransactionStatus(String status) {
+        return "Success".equalsIgnoreCase(status) 
+                ? TransactionStatusEnum.APPROVED 
+                : TransactionStatusEnum.FAILED;
+    }
+
+    private void updateTransactionDetails(Transaction transaction, PaymentNotificationRequest request) {
         transaction.setProviderCode(request.getCode());
         transaction.setProviderMessage(request.getMessage());
+        transaction.setLastUpdatedAt(LocalDateTime.now());
     }
 }
